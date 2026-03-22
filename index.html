@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contador de 1 hora</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Contador de 1 hora</h1>
+      <p class="subtitle">Pulsa el botón para iniciar el temporizador.</p>
+
+      <section class="timer-card" aria-live="polite">
+        <p id="timer" class="timer">01:00:00</p>
+        <p id="status" class="status">Esperando inicio...</p>
+      </section>
+
+      <button id="startBtn" class="start-btn" type="button">Iniciar contador</button>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
