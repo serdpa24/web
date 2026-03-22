@@ -1,11 +1,15 @@
 const DURATION_MS = 60 * 60 * 1000;
 const STORAGE_KEY = "contadorUnaHora";
 const VALID_CODE = "1234";
+const CHALLENGE_TEXT = "Ahora tienes una hora para resolver las pistas y poder volver";
 
 const timerEl = document.getElementById("timer");
 const statusEl = document.getElementById("status");
-const startBtn = document.getElementById("startBtn");
-const seenVideoEl = document.getElementById("seenVideo");
+const showClueBtn = document.getElementById("showClueBtn");
+const introSectionEl = document.getElementById("introSection");
+const clueSectionEl = document.getElementById("clueSection");
+const gameSectionEl = document.getElementById("gameSection");
+const challengeMessageEl = document.getElementById("challengeMessage");
 const codeInputEl = document.getElementById("codeInput");
 const validateBtnEl = document.getElementById("validateBtn");
 const validationResultEl = document.getElementById("validationResult");
@@ -23,9 +27,11 @@ function setValidationEnabled(isEnabled) {
   }
 }
 
-function updateStartButtonState() {
-  const countdownActive = intervalId !== null;
-  startBtn.disabled = countdownActive || !seenVideoEl.checked;
+function showGameUI() {
+  introSectionEl.classList.add("is-hidden");
+  clueSectionEl.classList.remove("is-hidden");
+  gameSectionEl.classList.remove("is-hidden");
+  challengeMessageEl.textContent = CHALLENGE_TEXT;
 }
 
 function formatDate(date) {
@@ -73,7 +79,6 @@ function finishCountdown(endAtMs) {
   timerEl.textContent = "00:00:00";
   statusEl.textContent = `Finalizado a las ${formatDate(new Date(endAtMs))}.`;
   setValidationEnabled(false);
-  updateStartButtonState();
   localStorage.removeItem(STORAGE_KEY);
 }
 
@@ -81,8 +86,8 @@ function startRunningCountdown(endAtMs) {
   if (intervalId !== null) {
     clearInterval(intervalId);
   }
+  showGameUI();
   setValidationEnabled(true);
-  updateStartButtonState();
 
   const tick = () => {
     const now = Date.now();
@@ -109,6 +114,13 @@ function handleStart() {
   startRunningCountdown(endAtMs);
 }
 
+function handleShowClue() {
+  if (intervalId !== null) {
+    return;
+  }
+  handleStart();
+}
+
 function handleValidate() {
   const userValue = codeInputEl.value.trim();
   if (userValue === VALID_CODE) {
@@ -122,20 +134,18 @@ function init() {
   const session = loadSession();
   if (session && Number.isFinite(session.endAtMs)) {
     if (session.endAtMs > Date.now()) {
-      seenVideoEl.checked = true;
       startRunningCountdown(session.endAtMs);
       return;
     }
+    showGameUI();
     finishCountdown(session.endAtMs);
     return;
   }
 
   setValidationEnabled(false);
-  updateStartButtonState();
   timerEl.textContent = formatRemaining(DURATION_MS);
 }
 
-startBtn.addEventListener("click", handleStart);
-seenVideoEl.addEventListener("change", updateStartButtonState);
+showClueBtn.addEventListener("click", handleShowClue);
 validateBtnEl.addEventListener("click", handleValidate);
 init();

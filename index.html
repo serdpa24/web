@@ -8,10 +8,12 @@
   </head>
   <body>
     <main class="container">
-      <h1>Contador de 1 hora</h1>
-      <p class="subtitle">Mira el video, confirma y luego inicia el temporizador.</p>
+      <h1>Felicidades por sobrevivir 26 años</h1>
+      <section id="introSection" class="intro-card">
+        <button id="showClueBtn" class="start-btn" type="button">Mostrar pista</button>
+      </section>
 
-      <section class="video-card">
+      <section id="clueSection" class="clue-section is-hidden">
         <iframe
           width="560"
           height="315"
@@ -22,27 +24,26 @@
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen
         ></iframe>
-        <label class="seen-wrapper" for="seenVideo">
-          <input id="seenVideo" type="checkbox" />
-          He visto el video
-        </label>
       </section>
 
-      <section class="timer-card" aria-live="polite">
-        <p id="timer" class="timer">01:00:00</p>
-        <p id="status" class="status">Esperando inicio...</p>
+      <section id="gameSection" class="is-hidden">
+        <p id="challengeMessage" class="subtitle"></p>
+
+        <section class="timer-card" aria-live="polite">
+          <p id="timer" class="timer">01:00:00</p>
+          <p id="status" class="status">Esperando inicio...</p>
+        </section>
+
+        <section class="validation-card">
+          <label class="validation-label" for="codeInput">Introduce el codigo:</label>
+          <div class="validation-row">
+            <input id="codeInput" class="code-input" type="text" disabled />
+            <button id="validateBtn" class="validate-btn" type="button" disabled>Comprobar</button>
+          </div>
+          <p id="validationResult" class="validation-result">Validacion inactiva hasta iniciar.</p>
+        </section>
       </section>
 
-      <button id="startBtn" class="start-btn" type="button" disabled>Iniciar contador</button>
-
-      <section class="validation-card">
-        <label class="validation-label" for="codeInput">Introduce el codigo:</label>
-        <div class="validation-row">
-          <input id="codeInput" class="code-input" type="text" disabled />
-          <button id="validateBtn" class="validate-btn" type="button" disabled>Validar</button>
-        </div>
-        <p id="validationResult" class="validation-result">Validacion inactiva hasta iniciar.</p>
-      </section>
     </main>
 
     <script src="./script.js"></script>
