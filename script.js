@@ -64,27 +64,6 @@ function loadSession() {
   }
 }
 
-function downloadLogFile(startAtMs) {
-  const endAtMs = startAtMs + DURATION_MS;
-  const content = [
-    "Registro de contador",
-    `Inicio: ${formatDate(new Date(startAtMs))}`,
-    `Fin previsto: ${formatDate(new Date(endAtMs))}`,
-  ].join("\n");
-
-  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const timestamp = new Date(startAtMs).toISOString().replace(/[:.]/g, "-");
-
-  link.href = url;
-  link.download = `contador_${timestamp}.txt`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
 function finishCountdown(endAtMs) {
   if (intervalId !== null) {
     clearInterval(intervalId);
@@ -127,7 +106,6 @@ function handleStart() {
   const endAtMs = startAtMs + DURATION_MS;
 
   saveSession(startAtMs);
-  downloadLogFile(startAtMs);
   startRunningCountdown(endAtMs);
 }
 
