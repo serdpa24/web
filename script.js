@@ -1,11 +1,32 @@
 const DURATION_MS = 60 * 60 * 1000;
 const STORAGE_KEY = "contadorUnaHora";
+const VALID_CODE = "1234";
 
 const timerEl = document.getElementById("timer");
 const statusEl = document.getElementById("status");
 const startBtn = document.getElementById("startBtn");
+const seenVideoEl = document.getElementById("seenVideo");
+const codeInputEl = document.getElementById("codeInput");
+const validateBtnEl = document.getElementById("validateBtn");
+const validationResultEl = document.getElementById("validationResult");
 
 let intervalId = null;
+
+function setValidationEnabled(isEnabled) {
+  codeInputEl.disabled = !isEnabled;
+  validateBtnEl.disabled = !isEnabled;
+  if (!isEnabled) {
+    codeInputEl.value = "";
+    validationResultEl.textContent = "Validacion inactiva hasta iniciar.";
+  } else {
+    validationResultEl.textContent = "Validacion activa.";
+  }
+}
+
+function updateStartButtonState() {
+  const countdownActive = intervalId !== null;
+  startBtn.disabled = countdownActive || !seenVideoEl.checked;
+}
 
 function formatDate(date) {
   return date.toLocaleString("es-ES");
@@ -72,16 +93,17 @@ function finishCountdown(endAtMs) {
 
   timerEl.textContent = "00:00:00";
   statusEl.textContent = `Finalizado a las ${formatDate(new Date(endAtMs))}.`;
-  startBtn.disabled = false;
+  setValidationEnabled(false);
+  updateStartButtonState();
   localStorage.removeItem(STORAGE_KEY);
 }
 
 function startRunningCountdown(endAtMs) {
-  startBtn.disabled = true;
-
   if (intervalId !== null) {
     clearInterval(intervalId);
   }
+  setValidationEnabled(true);
+  updateStartButtonState();
 
   const tick = () => {
     const now = Date.now();
@@ -109,10 +131,20 @@ function handleStart() {
   startRunningCountdown(endAtMs);
 }
 
+function handleValidate() {
+  const userValue = codeInputEl.value.trim();
+  if (userValue === VALID_CODE) {
+    validationResultEl.textContent = "Codigo correcto.";
+    return;
+  }
+  validationResultEl.textContent = "Codigo incorrecto.";
+}
+
 function init() {
   const session = loadSession();
   if (session && Number.isFinite(session.endAtMs)) {
     if (session.endAtMs > Date.now()) {
+      seenVideoEl.checked = true;
       startRunningCountdown(session.endAtMs);
       return;
     }
@@ -120,8 +152,12 @@ function init() {
     return;
   }
 
+  setValidationEnabled(false);
+  updateStartButtonState();
   timerEl.textContent = formatRemaining(DURATION_MS);
 }
 
 startBtn.addEventListener("click", handleStart);
+seenVideoEl.addEventListener("change", updateStartButtonState);
+validateBtnEl.addEventListener("click", handleValidate);
 init();

@@ -9,14 +9,40 @@
   <body>
     <main class="container">
       <h1>Contador de 1 hora</h1>
-      <p class="subtitle">Pulsa el botón para iniciar el temporizador.</p>
+      <p class="subtitle">Mira el video, confirma y luego inicia el temporizador.</p>
+
+      <section class="video-card">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/pd-WUEE4PzY?si=tYvTQcFQKprzWTbd"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+        <label class="seen-wrapper" for="seenVideo">
+          <input id="seenVideo" type="checkbox" />
+          He visto el video
+        </label>
+      </section>
 
       <section class="timer-card" aria-live="polite">
         <p id="timer" class="timer">01:00:00</p>
         <p id="status" class="status">Esperando inicio...</p>
       </section>
 
-      <button id="startBtn" class="start-btn" type="button">Iniciar contador</button>
+      <button id="startBtn" class="start-btn" type="button" disabled>Iniciar contador</button>
+
+      <section class="validation-card">
+        <label class="validation-label" for="codeInput">Introduce el codigo:</label>
+        <div class="validation-row">
+          <input id="codeInput" class="code-input" type="text" disabled />
+          <button id="validateBtn" class="validate-btn" type="button" disabled>Validar</button>
+        </div>
+        <p id="validationResult" class="validation-result">Validacion inactiva hasta iniciar.</p>
+      </section>
     </main>
 
     <script src="./script.js"></script>
