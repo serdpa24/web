@@ -378,13 +378,13 @@ h1 {
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;
-  background: #f3f4f6;
+  background: #94a3b8;
   display: grid;
   place-items: center;
   font-size: 1.2rem;
   font-weight: 900;
-  color: #0f172a;
-  transition: transform 0.05s ease-in-out, filter 0.12s ease-in-out;
+  color: #ffffff;
+  transition: transform 0.05s ease-in-out, box-shadow 0.12s ease-in-out, filter 0.12s ease-in-out;
 }
 
 .simon-btn:active {
@@ -392,7 +392,8 @@ h1 {
 }
 
 .simon-btn.is-lit {
-  filter: brightness(1.15);
+  filter: brightness(1.25) saturate(1.2);
+  transform: scale(1.02);
 }
 
 .simon-btn:disabled {
@@ -401,14 +402,27 @@ h1 {
 }
 
 .simon-green {
-  background: #bbf7d0;
+  background: #16a34a;
 }
 .simon-red {
-  background: #fecaca;
+  background: #dc2626;
 }
 .simon-yellow {
-  background: #fef9c3;
+  background: #f59e0b;
 }
 .simon-blue {
-  background: #bfdbfe;
+  background: #2563eb;
+}
+
+.simon-green.is-lit {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 0 26px rgba(34, 197, 94, 0.85);
+}
+.simon-red.is-lit {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 0 26px rgba(220, 38, 38, 0.85);
+}
+.simon-yellow.is-lit {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 0 26px rgba(245, 158, 11, 0.85);
+}
+.simon-blue.is-lit {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 0 26px rgba(37, 99, 235, 0.85);
 }

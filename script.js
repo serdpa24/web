@@ -701,7 +701,7 @@ function bindFinalValidate() {
 
 /* ------------------------ Simon Dice (step 4) ------------------------ */
 
-const SIMON_MAX_ROUNDS = 6;
+const SIMON_MAX_ROUNDS = 10;
 const simonBtnEls = [
   $("simonBtn0"),
   $("simonBtn1"),
@@ -761,7 +761,7 @@ function simonStartNewGame() {
   simonState.userIndex = 0;
   simonState.playing = false;
 
-  $("simonRoundText").textContent = "Ronda 0 de 6";
+  $("simonRoundText").textContent = `Ronda 0 de ${SIMON_MAX_ROUNDS}`;
   $("simonMessage").textContent = "Pulsa Reiniciar para empezar.";
 
   setSimonButtonsEnabled(true);
