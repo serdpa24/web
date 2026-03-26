@@ -671,6 +671,7 @@ const zipState = {
   pathLength: 100,
   solutionPath: [],
   numberByPathIndex: {},
+  pathIndexByNumber: {},
   currentIndex: 0,
   numberExpected: 1,
   visited: new Set(),
@@ -700,6 +701,7 @@ function zipSetup() {
   zipState.pathLength = 100;
   zipState.solutionPath = [];
   zipState.numberByPathIndex = {};
+  zipState.pathIndexByNumber = {};
   zipState.currentIndex = 0;
   zipState.numberExpected = 1;
   zipState.visited = new Set();
@@ -719,7 +721,9 @@ function zipSetup() {
   const numberIndices = [0, 6, 12, 18, 24, 30, 36, 42, 50, 56, 62, 68, 74, 80, 86, 99];
   for (let i = 0; i < numberIndices.length; i++) {
     const pathIndex = numberIndices[i];
-    zipState.numberByPathIndex[pathIndex] = i + 1;
+    const num = i + 1;
+    zipState.numberByPathIndex[pathIndex] = num;
+    zipState.pathIndexByNumber[num] = pathIndex;
   }
 }
 
@@ -754,15 +758,15 @@ function zipRenderGrid() {
 }
 
 function zipRenderHintsAndExpected() {
-  // Default expected cell highlight.
+  // Más difícil: no marcamos la casilla exacta del siguiente paso.
+  // Solo resaltamos la casilla donde está el "siguiente número esperado".
+  for (const { el } of zipState.cellByPathIndex) el.classList.remove("expected");
+
+  const nextNumberPathIndex = zipState.pathIndexByNumber[zipState.numberExpected];
   const found = zipState.cellByPathIndex.find(
-    (c) => c.pathIndex === zipState.currentIndex
+    (c) => c.pathIndex === nextNumberPathIndex
   );
-  const expectedEl = found ? found.el : null;
-  for (const { el } of zipState.cellByPathIndex) {
-    el.classList.remove("expected");
-  }
-  if (expectedEl) expectedEl.classList.add("expected");
+  if (found && found.el) found.el.classList.add("expected");
 }
 
 function zipHighlightPathRange(startPathIndex, endPathIndex) {
