@@ -3,47 +3,133 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contador de 1 hora</title>
+    <title>Escape Cumpleaños</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <main class="container">
-      <h1>Felicidades por sobrevivir 26 años</h1>
-      <section id="introSection" class="intro-card">
-        <button id="showClueBtn" class="start-btn" type="button">Mostrar pista</button>
+      <h1 class="title">Escape de cumpleaños</h1>
+      <p id="progressText" class="progress-text"></p>
+
+      <!-- step 1: video -->
+      <section id="step1" class="step is-hidden" aria-live="polite">
+        <div class="card">
+          <h2>Bienvenida</h2>
+          <p class="subtitle">Escanea el QR y comienza el juego.</p>
+          <iframe
+            id="introVideo"
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/pd-WUEE4PzY?si=tYvTQcFQKprzWTbd"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+          <button id="toStep2Btn" class="start-btn" type="button">Comenzar prueba 1</button>
+        </div>
       </section>
 
-      <section id="clueSection" class="clue-section is-hidden">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/pd-WUEE4PzY?si=tYvTQcFQKprzWTbd"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </section>
+      <!-- step 2: dino -->
+      <section id="step2" class="step is-hidden" aria-live="polite">
+        <div class="card">
+          <h2>Prueba 1: Dinosaurio</h2>
+          <p class="subtitle">
+            Objetivo: <strong id="dinoGoalLabel">5000</strong> puntos.
+            Ganas <strong>100</strong> puntos por cada obstáculo que esquives.
+            (Salta con <strong>Espacio</strong> o con el botón.)
+          </p>
 
-      <section id="gameSection" class="is-hidden">
-        <p id="challengeMessage" class="subtitle"></p>
-
-        <section class="timer-card" aria-live="polite">
-          <p id="timer" class="timer">01:00:00</p>
-          <p id="status" class="status">Esperando inicio...</p>
-        </section>
-
-        <section class="validation-card">
-          <label class="validation-label" for="codeInput">Introduce el codigo:</label>
-          <div class="validation-row">
-            <input id="codeInput" class="code-input" type="text" disabled />
-            <button id="validateBtn" class="validate-btn" type="button" disabled>Comprobar</button>
+          <div class="dino-area">
+            <canvas id="dinoCanvas" class="dino-canvas" width="600" height="250" role="img" aria-label="Juego dinosaurio"></canvas>
+            <div class="hud">
+              <div class="hud-item">Puntuación: <span id="dinoScore">0</span></div>
+              <div class="hud-item">Objetivo: <span id="dinoGoal">5000</span></div>
+            </div>
           </div>
-          <p id="validationResult" class="validation-result">Validacion inactiva hasta iniciar.</p>
-        </section>
+
+          <div class="actions">
+            <button id="dinoJumpBtn" class="ghost-btn" type="button">Saltar</button>
+            <button id="dinoRestartBtn" class="ghost-btn" type="button">Reiniciar</button>
+            <button id="dinoHowBtn" class="ghost-btn" type="button">Ayuda</button>
+          </div>
+
+          <p id="dinoStatus" class="validation-result"></p>
+        </div>
+
+        <div id="step2Result" class="result-card card is-hidden">
+          <p class="result-digit">Dígito conseguido: <strong id="digitA"></strong></p>
+          <p id="dinoClue" class="subtitle"></p>
+          <p class="subtitle">Escanea el QR de la caja para continuar.</p>
+          <a id="toStep3Link" class="start-btn" href="?step=3">Continuar a prueba 2</a>
+        </div>
       </section>
 
+      <!-- step 3: memory -->
+      <section id="step3" class="step is-hidden" aria-live="polite">
+        <div class="card">
+          <h2>Prueba 2: Memoria</h2>
+          <p id="memorySubtitle" class="subtitle"></p>
+
+          <div id="memoryGrid" class="memory-grid"></div>
+
+          <div class="actions" id="memoryControls">
+            <button id="memoryRestartBtn" class="ghost-btn" type="button">Reiniciar</button>
+            <button id="memoryHelpBtn" class="ghost-btn" type="button">Pista</button>
+          </div>
+
+          <p id="memoryStatus" class="validation-result"></p>
+          <p id="memoryProgress" class="subtitle"></p>
+        </div>
+
+        <div id="step3Result" class="result-card card is-hidden">
+          <p class="result-digit">Dígito conseguido: <strong id="digitB"></strong></p>
+          <p id="memoryClue" class="subtitle"></p>
+          <p class="subtitle">Escanea el QR de la caja con llave para continuar.</p>
+          <a id="toStep4Link" class="start-btn" href="?step=4">Continuar a prueba 3</a>
+        </div>
+      </section>
+
+      <!-- step 4: zip -->
+      <section id="step4" class="step is-hidden" aria-live="polite">
+        <div class="card">
+          <h2>Prueba 3: Zip (recorrido total)</h2>
+          <p id="zipSubtitle" class="subtitle"></p>
+
+          <div class="zip-controls actions">
+            <button id="zipHint1Btn" class="ghost-btn" type="button">Pista 1</button>
+            <button id="zipHint2Btn" class="ghost-btn" type="button">Pista 2</button>
+            <button id="zipRestartBtn" class="ghost-btn" type="button">Reiniciar</button>
+          </div>
+
+          <div id="zipGrid" class="zip-grid"></div>
+
+          <p id="zipMessage" class="validation-result"></p>
+          <p id="zipCounter" class="subtitle"></p>
+        </div>
+
+        <div id="step4Result" class="result-card card is-hidden">
+          <p class="result-digit">Último dígito: <strong id="digitC"></strong></p>
+          <p id="zipFinalText" class="subtitle"></p>
+
+          <div id="lockForm" class="lock-form">
+            <label class="validation-label" for="finalCodeInput">Introduce los 3 dígitos:</label>
+            <div class="validation-row">
+              <input
+                id="finalCodeInput"
+                class="code-input"
+                type="text"
+                inputmode="numeric"
+                maxlength="3"
+                placeholder="000"
+              />
+              <button id="finalValidateBtn" class="validate-btn" type="button">Abrir</button>
+            </div>
+            <p id="finalValidateResult" class="validation-result"></p>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script src="./script.js"></script>
