@@ -752,6 +752,7 @@ async function simonPlaySequence() {
   simonState.playing = false;
   simonState.userIndex = 0;
   $("simonMessage").textContent = "Tu turno.";
+  setSimonButtonsEnabled(true);
 }
 
 function simonStartNewGame() {
