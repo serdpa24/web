@@ -55,6 +55,15 @@ h1 {
   border-radius: 10px;
 }
 
+#introVideo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  display: block;
+}
+
 .timer {
   margin: 0;
   font-size: clamp(2rem, 9vw, 3.3rem);

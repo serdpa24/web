@@ -19,7 +19,7 @@ const FINAL_LOCK_CODE = `${DIGIT_A}${DIGIT_B}${DIGIT_C}`;
 
 // Configura aquí los textos de pista física.
 const CLUE_FOR_GIFT_LOCATION =
-  "Pista: busca la caja del regalo en un lugar que sabes que te encanta encontrar.";
+  "Pista: Iholflgdghv sru frpsohwdu ho sulphu mxhjr, dkrud wlhqhv txh exvfdu dtxhoor txh wdqwr dqvldv. Ghehv exvfdu hq or txh frohfflrqdv, dtxho txh ql vltxlhud klcr txh wx pdguh vh djdfkdud hqfrqwududv od vljxlhqwh slvwd.";
 const CLUE_FOR_KEY_LOCATION =
   "Pista: dentro de una caja con candado encontrarás una llave. Búscala donde normalmente guardas cosas importantes.";
 const ZIP_FINAL_TEXT =
