@@ -12,9 +12,9 @@ const STORAGE_KEYS = {
 };
 
 // Configura aquí los dígitos finales (A/B/C) para que coincidan con tu candado real.
-const DIGIT_A = "1";
-const DIGIT_B = "2";
-const DIGIT_C = "3";
+const DIGIT_A = "8";
+const DIGIT_B = "10";
+const DIGIT_C = "888";
 const FINAL_LOCK_CODE = `${DIGIT_A}${DIGIT_B}${DIGIT_C}`;
 
 // Configura aquí los textos de pista física.
@@ -24,6 +24,9 @@ const CLUE_FOR_KEY_LOCATION =
   "Pista: dentro de una caja con candado encontrarás una llave. Búscala donde normalmente guardas cosas importantes.";
 const ZIP_FINAL_TEXT =
   "Cuando tengas el candado abierto, ¡revelará el regalo! Introduce el código cuando estés listo.";
+
+const SIMON_FINAL_TEXT =
+  "¡Enhorabuena! Has completado la prueba final. Ya puedes abrir el candado con el código.";
 
 const MEMORY_IMAGES = [
   "ana.jpeg",
@@ -696,6 +699,156 @@ function bindFinalValidate() {
   });
 }
 
+/* ------------------------ Simon Dice (step 4) ------------------------ */
+
+const SIMON_MAX_ROUNDS = 6;
+const simonBtnEls = [
+  $("simonBtn0"),
+  $("simonBtn1"),
+  $("simonBtn2"),
+  $("simonBtn3"),
+];
+
+const simonState = {
+  sequence: [],
+  round: 0,
+  userIndex: 0,
+  playing: false,
+  listenersBound: false,
+};
+
+function setSimonButtonsEnabled(isEnabled) {
+  for (const btn of simonBtnEls) {
+    if (!btn) continue;
+    btn.disabled = !isEnabled;
+  }
+}
+
+function simonLight(valueIndex, isOn) {
+  const btn = simonBtnEls[valueIndex];
+  if (!btn) return;
+  btn.classList.toggle("is-lit", !!isOn);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function simonPlaySequence() {
+  simonState.playing = true;
+  setSimonButtonsEnabled(false);
+
+  $("simonMessage").textContent = "Mira la secuencia...";
+  await sleep(350);
+
+  for (let i = 0; i < simonState.sequence.length; i++) {
+    const value = simonState.sequence[i];
+    simonLight(value, true);
+    await sleep(420);
+    simonLight(value, false);
+    await sleep(120);
+  }
+
+  simonState.playing = false;
+  simonState.userIndex = 0;
+  $("simonMessage").textContent = "Tu turno.";
+}
+
+function simonStartNewGame() {
+  simonState.sequence = [];
+  simonState.round = 0;
+  simonState.userIndex = 0;
+  simonState.playing = false;
+
+  $("simonRoundText").textContent = "Ronda 0 de 6";
+  $("simonMessage").textContent = "Pulsa Reiniciar para empezar.";
+
+  setSimonButtonsEnabled(true);
+}
+
+function simonNextRound() {
+  if (simonState.round >= SIMON_MAX_ROUNDS) return;
+
+  const nextValue = Math.floor(Math.random() * 4); // 0..3
+  simonState.sequence.push(nextValue);
+  simonState.round += 1;
+  $("simonRoundText").textContent = `Ronda ${simonState.round} de ${SIMON_MAX_ROUNDS}`;
+
+  simonPlaySequence();
+}
+
+function simonHandleCorrectStep() {
+  simonState.userIndex += 1;
+
+  if (simonState.userIndex >= simonState.sequence.length) {
+    if (simonState.round >= SIMON_MAX_ROUNDS) {
+      winSimon();
+      return;
+    }
+    simonNextRound();
+  }
+}
+
+function simonHandleWrongStep() {
+  simonState.playing = true;
+  setSimonButtonsEnabled(false);
+  $("simonMessage").textContent = "Fallaste. Reiniciando...";
+
+  window.setTimeout(() => {
+    simonStartNewGame();
+    simonNextRound(); // empieza por ronda 1 inmediatamente
+  }, 900);
+}
+
+function winSimon() {
+  simonState.playing = false;
+  setSimonButtonsEnabled(false);
+
+  $("simonMessage").textContent = "¡Correcto! Prueba final completada.";
+  localStorage.setItem(STORAGE_KEYS.step4Done, "1");
+  localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
+
+  $("digitC").textContent = DIGIT_C;
+  $("simonFinalText").textContent = SIMON_FINAL_TEXT;
+  showEl($("step4Result"), true);
+  bindFinalValidate();
+}
+
+function initSimon() {
+  if (!simonState.listenersBound) {
+    for (let idx = 0; idx < simonBtnEls.length; idx++) {
+      const btn = simonBtnEls[idx];
+      if (!btn) continue;
+      btn.addEventListener("click", () => {
+        if (simonState.playing) return;
+        if (simonState.userIndex >= simonState.sequence.length) return;
+
+        simonLight(idx, true);
+        window.setTimeout(() => simonLight(idx, false), 160);
+
+        const expected = simonState.sequence[simonState.userIndex];
+        if (idx === expected) {
+          $("simonMessage").textContent = "Bien.";
+          simonHandleCorrectStep();
+        } else {
+          simonHandleWrongStep();
+        }
+      });
+    }
+
+    $("simonRestartBtn").addEventListener("click", () => {
+      simonStartNewGame();
+      simonNextRound();
+    });
+
+    simonState.listenersBound = true;
+  }
+
+  // Si recargamos, reiniciamos para que el usuario empiece desde el principio.
+  simonStartNewGame();
+  simonNextRound();
+}
+
 function zipSetup() {
   zipState.size = 10;
   zipState.pathLength = 100;
@@ -958,32 +1111,29 @@ function boot() {
     const step3Done = localStorage.getItem(STORAGE_KEYS.step3Done) === "1";
 
     if (!step3Done) {
-      $("zipSubtitle").textContent = "Primero completa la prueba 2 (Memoria).";
-      $("zipMessage").textContent = "Necesitas el dígito de la memoria antes de jugar a Zip.";
+      $("simonSubtitle").textContent = "Primero completa la prueba 2 (Memoria).";
+      $("simonMessage").textContent =
+        "Necesitas el dígito de la memoria antes de jugar a la prueba final.";
       showEl($("step4Result"), false);
-      $("zipGrid").innerHTML = "";
-      $("zipCounter").textContent = "";
-      $("finalValidateResult").textContent = "";
-      $("zipHint1Btn").disabled = true;
-      $("zipHint2Btn").disabled = true;
-      $("zipRestartBtn").disabled = true;
+      $("simonRoundText").textContent = "";
+      setSimonButtonsEnabled(false);
       return;
     }
 
-    $("zipSubtitle").textContent = "Zip: visita todas las casillas y pasa por los números del 1 al 16 en orden.";
     if (done) {
       const storedDigitC = localStorage.getItem(STORAGE_KEYS.step4Digit);
       $("digitC").textContent = storedDigitC !== null ? storedDigitC : DIGIT_C;
-      $("zipFinalText").textContent = ZIP_FINAL_TEXT;
+      $("simonFinalText").textContent = SIMON_FINAL_TEXT;
       showEl($("step4Result"), true);
       showEl($("step4"), true);
       bindFinalValidate();
+      $("simonSubtitle").textContent = "Prueba final completada.";
+      setSimonButtonsEnabled(false);
     } else {
       showEl($("step4Result"), false);
-      $("zipHint1Btn").disabled = false;
-      $("zipHint2Btn").disabled = false;
-      $("zipRestartBtn").disabled = false;
-      initZip();
+      $("simonSubtitle").textContent = "Simon Dice: repite la secuencia.";
+      setSimonButtonsEnabled(true);
+      initSimon();
     }
   }
 

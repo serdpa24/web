@@ -89,27 +89,30 @@
         </div>
       </section>
 
-      <!-- step 4: zip -->
+      <!-- step 4: simon dice -->
       <section id="step4" class="step is-hidden" aria-live="polite">
         <div class="card">
-          <h2>Prueba 3: Zip (recorrido total)</h2>
-          <p id="zipSubtitle" class="subtitle"></p>
+          <h2>Prueba 3: Simon Dice</h2>
+          <p id="simonSubtitle" class="subtitle"></p>
 
-          <div class="zip-controls actions">
-            <button id="zipHint1Btn" class="ghost-btn" type="button">Pista 1</button>
-            <button id="zipHint2Btn" class="ghost-btn" type="button">Pista 2</button>
-            <button id="zipRestartBtn" class="ghost-btn" type="button">Reiniciar</button>
+          <div id="simonGrid" class="simon-grid" aria-label="Simon Dice" role="application">
+            <button id="simonBtn0" class="simon-btn simon-green" type="button" aria-label="Verde"></button>
+            <button id="simonBtn1" class="simon-btn simon-red" type="button" aria-label="Rojo"></button>
+            <button id="simonBtn2" class="simon-btn simon-yellow" type="button" aria-label="Amarillo"></button>
+            <button id="simonBtn3" class="simon-btn simon-blue" type="button" aria-label="Azul"></button>
           </div>
 
-          <div id="zipGrid" class="zip-grid"></div>
+          <div class="actions">
+            <button id="simonRestartBtn" class="ghost-btn" type="button">Reiniciar</button>
+          </div>
 
-          <p id="zipMessage" class="validation-result"></p>
-          <p id="zipCounter" class="subtitle"></p>
+          <p id="simonMessage" class="validation-result"></p>
+          <p id="simonRoundText" class="subtitle"></p>
         </div>
 
         <div id="step4Result" class="result-card card is-hidden">
           <p class="result-digit">Último dígito: <strong id="digitC"></strong></p>
-          <p id="zipFinalText" class="subtitle"></p>
+          <p id="simonFinalText" class="subtitle"></p>
 
           <div id="lockForm" class="lock-form">
             <label class="validation-label" for="finalCodeInput">Introduce los 3 dígitos:</label>
