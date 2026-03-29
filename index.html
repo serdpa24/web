@@ -134,6 +134,12 @@
               [1,0],[0,1],[-1,0],[0,-1],[1,1],[-1,-1],[-1,1],[1,-1]
             ];
             
+            let board = [];
+            let isSelecting = false;
+            let startCell = null;
+            let currentPath = [];
+            let foundCells = new Set();
+            
             function randomInt(min, max) {
               return Math.floor(Math.random() * (max - min + 1)) + min;
             }
@@ -185,7 +191,8 @@
             }
             
             function generateWordsearch() {
-              let board = makeEmptyBoard(WORDSEARCH_SIZE);
+              board = makeEmptyBoard(WORDSEARCH_SIZE);
+              foundCells.clear();
             
               WORDSEARCH_WORDS.forEach(w => {
                 w.positions = placeWord(board, w.word);
@@ -194,156 +201,175 @@
             
               fillEmpty(board);
             
-              let isSelecting = false;
-              let startCell = null;
-              let currentPath = [];
-              let foundCells = new Set();
+              render();
+              attachEvents();
+              updateStatus();
+            }
             
-              function getLineCells(x1, y1, x2, y2) {
-                let dx = Math.sign(x2 - x1);
-                let dy = Math.sign(y2 - y1);
+            function getLineCells(x1, y1, x2, y2) {
+              let dx = Math.sign(x2 - x1);
+              let dy = Math.sign(y2 - y1);
             
-                let cells = [];
-                let x = x1, y = y1;
+              let cells = [];
+              let x = x1, y = y1;
             
-                while (true) {
-                  cells.push(`${x},${y}`);
-                  if (x === x2 && y === y2) break;
-                  x += dx;
-                  y += dy;
+              while (true) {
+                cells.push(`${x},${y}`);
+                if (x === x2 && y === y2) break;
+                x += dx;
+                y += dy;
+              }
+              return cells;
+            }
+            
+            function highlightPath() {
+              document.querySelectorAll("#wordsearchGrid td").forEach(td => {
+                const key = td.dataset.key;
+            
+                if (foundCells.has(key)) {
+                  td.style.background = "#90ee90";
+                } else if (currentPath.includes(key)) {
+                  td.style.background = "#ffe374";
+                } else {
+                  td.style.background = "#fff";
                 }
-                return cells;
-              }
+              });
+            }
             
-              function checkWords(path) {
-                let sortedPath = [...path].sort().join('|');
+            function checkWords() {
+              let sortedPath = [...currentPath].sort().join('|');
             
-                WORDSEARCH_WORDS.forEach(w => {
-                  if (!w.found) {
-                    let sortedWord = [...w.positions].sort().join('|');
+              WORDSEARCH_WORDS.forEach(w => {
+                if (!w.found) {
+                  let sortedWord = [...w.positions].sort().join('|');
             
-                    if (sortedPath === sortedWord) {
-                      w.found = true;
+                  if (sortedPath === sortedWord) {
+                    w.found = true;
             
-                      w.positions.forEach(p => {
-                        foundCells.add(p);
-                        const el = document.querySelector(`[data-key="${p}"]`);
-                        if (el) el.classList.add("found-anim");
-                      });
+                    w.positions.forEach(p => {
+                      foundCells.add(p);
+                      const el = document.querySelector(`[data-key="${p}"]`);
+                      if (el) el.classList.add("found-anim");
+                    });
             
-                      setTimeout(() => {
-                        document.querySelectorAll(".found-anim")
-                          .forEach(e => e.classList.remove("found-anim"));
-                      }, 500);
-            
-                      updateStatus();
-                    }
+                    setTimeout(() => {
+                      document.querySelectorAll(".found-anim")
+                        .forEach(e => e.classList.remove("found-anim"));
+                    }, 400);
                   }
-                });
-              }
+                }
+              });
             
-              function render() {
-                let html = '<table style="margin:auto;border-collapse:collapse;touch-action:none;">';
+              updateStatus();
+            }
             
-                for (let y = 0; y < WORDSEARCH_SIZE; y++) {
-                  html += '<tr>';
-                  for (let x = 0; x < WORDSEARCH_SIZE; x++) {
-                    const key = `${x},${y}`;
+            function render() {
+              let html = '<table style="margin:auto;border-collapse:collapse;touch-action:none;">';
             
-                    let bg = "#fff";
-                    if (foundCells.has(key)) bg = "#90ee90";
-                    else if (currentPath.includes(key)) bg = "#ffe374";
+              for (let y = 0; y < WORDSEARCH_SIZE; y++) {
+                html += '<tr>';
+                for (let x = 0; x < WORDSEARCH_SIZE; x++) {
+                  const key = `${x},${y}`;
             
-                    html += `
-                    <td 
-                      data-x="${x}" data-y="${y}" data-key="${key}"
-                      style="
-                        width:30px;height:30px;
-                        text-align:center;
-                        border:1px solid #999;
-                        background:${bg};
-                        font-weight:bold;
-                        user-select:none;
-                      ">
+                  html += `
+                    <td data-x="${x}" data-y="${y}" data-key="${key}"
+                      style="width:30px;height:30px;text-align:center;border:1px solid #999;font-weight:bold;">
                       ${board[y][x]}
                     </td>`;
-                  }
-                  html += '</tr>';
                 }
-            
-                html += '</table>';
-                document.getElementById('wordsearchGrid').innerHTML = html;
-            
-                attachEvents();
+                html += '</tr>';
               }
             
-              function attachEvents() {
-                const cells = document.querySelectorAll("#wordsearchGrid td");
+              html += '</table>';
+              document.getElementById('wordsearchGrid').innerHTML = html;
+            }
             
-                cells.forEach(cell => {
-                  const x = parseInt(cell.dataset.x);
-                  const y = parseInt(cell.dataset.y);
+            function attachEvents() {
+              const grid = document.getElementById('wordsearchGrid');
             
-                  // RATÓN
-                  cell.onmousedown = () => start(x,y);
-                  cell.onmouseover = () => move(x,y);
-                  cell.onmouseup = () => end(x,y);
+              grid.onmousedown = e => {
+                const td = e.target.closest("td");
+                if (!td) return;
             
-                  // TOUCH
-                  cell.ontouchstart = (e) => {
-                    e.preventDefault();
-                    start(x,y);
-                  };
-            
-                  cell.ontouchmove = (e) => {
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                    if (el && el.dataset.x) {
-                      move(parseInt(el.dataset.x), parseInt(el.dataset.y));
-                    }
-                  };
-            
-                  cell.ontouchend = () => end(x,y);
-                });
-              }
-            
-              function start(x,y){
-                isSelecting = true;
-                startCell = [x,y];
-                currentPath = [`${x},${y}`];
-                render();
-              }
-            
-              function move(x,y){
-                if (!isSelecting) return;
-                currentPath = getLineCells(startCell[0], startCell[1], x, y);
-                render();
-              }
-            
-              function end(x,y){
-                if (!isSelecting) return;
-                isSelecting = false;
-            
-                currentPath = getLineCells(startCell[0], startCell[1], x, y);
-                checkWords(currentPath);
+                // 🔥 reset selección SIEMPRE al empezar
                 currentPath = [];
-                render();
-              }
+                isSelecting = true;
             
-              function updateStatus() {
-                const found = WORDSEARCH_WORDS.filter(w => w.found).length;
-                const stat = document.getElementById('wordsearchStatus');
+                startCell = [parseInt(td.dataset.x), parseInt(td.dataset.y)];
+                currentPath = [`${startCell[0]},${startCell[1]}`];
             
-                if (found === 3) {
-                  stat.textContent = '¡Enhorabuena! 🎉';
-                } else {
-                  stat.textContent = `Palabras encontradas: ${found}/3`;
-                }
-              }
+                highlightPath();
+              };
             
-              render();
-              updateStatus();
+              grid.onmousemove = e => {
+                if (!isSelecting) return;
+            
+                const td = e.target.closest("td");
+                if (!td) return;
+            
+                const x = parseInt(td.dataset.x);
+                const y = parseInt(td.dataset.y);
+            
+                currentPath = getLineCells(startCell[0], startCell[1], x, y);
+                highlightPath();
+              };
+            
+              window.onmouseup = () => {
+                if (!isSelecting) return;
+            
+                isSelecting = false;
+                checkWords();
+                currentPath = [];
+                highlightPath();
+              };
+            
+              // 📱 TOUCH
+              grid.ontouchstart = e => {
+                e.preventDefault();
+                const td = e.target.closest("td");
+                if (!td) return;
+            
+                currentPath = [];
+                isSelecting = true;
+            
+                startCell = [parseInt(td.dataset.x), parseInt(td.dataset.y)];
+                currentPath = [`${startCell[0]},${startCell[1]}`];
+            
+                highlightPath();
+              };
+            
+              grid.ontouchmove = e => {
+                e.preventDefault();
+                if (!isSelecting) return;
+            
+                const touch = e.touches[0];
+                const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (!el || !el.dataset.x) return;
+            
+                const x = parseInt(el.dataset.x);
+                const y = parseInt(el.dataset.y);
+            
+                currentPath = getLineCells(startCell[0], startCell[1], x, y);
+                highlightPath();
+              };
+            
+              grid.ontouchend = () => {
+                if (!isSelecting) return;
+            
+                isSelecting = false;
+                checkWords();
+                currentPath = [];
+                highlightPath();
+              };
+            }
+            
+            function updateStatus() {
+              const found = WORDSEARCH_WORDS.filter(w => w.found).length;
+              const stat = document.getElementById('wordsearchStatus');
+            
+              stat.textContent = found === 3
+                ? '¡Enhorabuena! 🎉'
+                : `Palabras encontradas: ${found}/3`;
             }
             
             setTimeout(generateWordsearch, 300);
@@ -356,10 +382,12 @@
             
             @keyframes pop {
               0% { transform: scale(1); background:#ffe374; }
-              50% { transform: scale(1.3); background:#00ffcc; }
+              50% { transform: scale(1.2); background:#00ffcc; }
               100% { transform: scale(1); background:#90ee90; }
             }
             </style>
+            
+
           <!--<div id="lockForm" class="lock-form">
             <label class="validation-label" for="finalCodeInput">Introduce los 3 dígitos:</label>
             <div class="validation-row">
