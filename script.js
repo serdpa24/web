@@ -1124,7 +1124,7 @@ function boot() {
     if (done) {
       const storedDigitC = localStorage.getItem(STORAGE_KEYS.step4Digit);
       //$("digitC").textContent = storedDigitC !== null ? storedDigitC : DIGIT_C;
-      $("simonFinalText").textContent = SIMON_FINAL_TEXT;
+      //$("simonFinalText").textContent = SIMON_FINAL_TEXT;
       showEl($("step4Result"), true);
       showEl($("step4"), true);
       bindFinalValidate();
