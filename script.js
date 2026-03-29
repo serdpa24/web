@@ -810,7 +810,7 @@ function winSimon() {
   localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
 
   //$("digitC").textContent = DIGIT_C;
-  $("simonFinalText").textContent = SIMON_FINAL_TEXT;
+  //$("simonFinalText").textContent = SIMON_FINAL_TEXT;
   showEl($("step4Result"), true);
   bindFinalValidate();
 }
