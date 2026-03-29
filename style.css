@@ -55,7 +55,8 @@ h1 {
   border-radius: 10px;
 }
 
-#introVideo {
+#introVideo,
+#finalVideo {
   width: 100%;
   max-width: 100%;
   height: auto;
