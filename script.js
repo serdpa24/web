@@ -62,7 +62,7 @@ function getStepFromUrl() {
   const raw = params.get(STEP_KEY);
   const step = Number.parseInt(raw !== null ? raw : "1", 10);
   if (!Number.isFinite(step)) return 1;
-  return Math.min(4, Math.max(1, step));
+  return Math.min(5, Math.max(1, step));
 }
 
 function showEl(el, isVisible) {
@@ -75,15 +75,17 @@ function setStep(step) {
   const step2El = $("step2");
   const step3El = $("step3");
   const step4El = $("step4");
+  const step5El = $("step5");
   
   
   showEl(step1El, step === 1);
   showEl(step2El, step === 2);
   showEl(step3El, step === 3);
   showEl(step4El, step === 4);
+  showEl(step5El, step === 5);
   
 
-  $("progressText").textContent = `Paso ${step} de 4`;
+  $("progressText").textContent = `Paso ${step} de 5`;
 }
 
 function resetDinoState() {
