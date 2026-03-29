@@ -21,7 +21,7 @@ const FINAL_LOCK_CODE = `${DIGIT_A}${DIGIT_B}${DIGIT_C}`;
 const CLUE_FOR_GIFT_LOCATION =
   "Pista: Iholflgdghv sru frpsohwdu ho sulphu mxhjr, dkrud wlhqhv txh exvfdu dtxhoor txh wdqwr dqvldv. Ghehv exvfdu hq or txh frohfflrqdv, dtxho txh ql vltxlhud klcr txh wx pdguh vh djdfkdud hqfrqwududv od vljxlhqwh slvwd.";
 const CLUE_FOR_KEY_LOCATION =
-  "Pista: dentro de una caja con candado encontrarás una llave. Búscala donde normalmente guardas cosas importantes.";
+  "Pista: Nunca pensé que esto acabaría así <br/>Observa bien cada detalle <br>Hace falta paciencia <br/>Aunque parezca difícil <br/>Confía en tu intuición <br/>Es más sencillo de lo que parece <br/>Fíjate en lo obvio <br/>Al final todo encaja <br/ >Llega el momento de decidir <br/>Toma la pista correcta <br/>Ahora actúa <br/>Sigue adelante <br/>Es tu oportunidad <br/>Recuerda lo aprendido <br/>  Un paso más <br/>No te rindas <br/>Llega hasta el final <br/>Inténtalo otra vez <br/>Nunca es tarde <br/>Confía en ti <br/>Encuentra la salida</p>";
 const ZIP_FINAL_TEXT =
   "Cuando tengas el candado abierto, ¡revelará el regalo! Introduce el código cuando estés listo.";
 
