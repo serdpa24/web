@@ -207,20 +207,36 @@
             }
             
             function getLineCells(x1, y1, x2, y2) {
-              let dx = Math.sign(x2 - x1);
-              let dy = Math.sign(y2 - y1);
-            
-              let cells = [];
-              let x = x1, y = y1;
-            
-              while (true) {
-                cells.push(`${x},${y}`);
-                if (x === x2 && y === y2) break;
-                x += dx;
-                y += dy;
-              }
-              return cells;
-            }
+  let dx = x2 - x1;
+  let dy = y2 - y1;
+
+  // ✅ validar línea recta
+  if (
+    dx !== 0 &&
+    dy !== 0 &&
+    Math.abs(dx) !== Math.abs(dy)
+  ) {
+    return []; // ❌ no es línea válida → evitamos bucle infinito
+  }
+
+  dx = Math.sign(dx);
+  dy = Math.sign(dy);
+
+  let cells = [];
+  let x = x1, y = y1;
+
+  // ✅ seguridad extra (nunca más de 14 pasos)
+  for (let i = 0; i < WORDSEARCH_SIZE; i++) {
+    cells.push(`${x},${y}`);
+
+    if (x === x2 && y === y2) break;
+
+    x += dx;
+    y += dy;
+  }
+
+  return cells;
+}
             
             function highlightPath() {
               document.querySelectorAll("#wordsearchGrid td").forEach(td => {
@@ -238,6 +254,7 @@
             
             function checkWords() {
               let sortedPath = [...currentPath].sort().join('|');
+              if (currentPath.length === 0) return;
             
               WORDSEARCH_WORDS.forEach(w => {
                 if (!w.found) {
