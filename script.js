@@ -62,7 +62,7 @@ function getStepFromUrl() {
   const raw = params.get(STEP_KEY);
   const step = Number.parseInt(raw !== null ? raw : "1", 10);
   if (!Number.isFinite(step)) return 1;
-  return Math.min(4, Math.max(1, step));
+  return Math.min(5, Math.max(1, step));
 }
 
 function showEl(el, isVisible) {
@@ -1143,6 +1143,7 @@ function boot() {
   }
   if (step === 5) {
     showEl($("step5"), true);
+
   }
 
   // Step 3 defaults for UI strings
