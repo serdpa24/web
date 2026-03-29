@@ -809,7 +809,7 @@ function winSimon() {
   localStorage.setItem(STORAGE_KEYS.step4Done, "1");
   localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
 
-  $("digitC").textContent = DIGIT_C;
+  //$("digitC").textContent = DIGIT_C;
   $("simonFinalText").textContent = SIMON_FINAL_TEXT;
   showEl($("step4Result"), true);
   bindFinalValidate();
@@ -1012,7 +1012,7 @@ function winZip() {
   localStorage.setItem(STORAGE_KEYS.step4Done, "1");
   localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
 
-  $("digitC").textContent = DIGIT_C;
+  //$("digitC").textContent = DIGIT_C;
   $("zipFinalText").textContent = ZIP_FINAL_TEXT;
   showEl($("step4Result"), true);
 }
@@ -1123,7 +1123,7 @@ function boot() {
 
     if (done) {
       const storedDigitC = localStorage.getItem(STORAGE_KEYS.step4Digit);
-      $("digitC").textContent = storedDigitC !== null ? storedDigitC : DIGIT_C;
+      //$("digitC").textContent = storedDigitC !== null ? storedDigitC : DIGIT_C;
       $("simonFinalText").textContent = SIMON_FINAL_TEXT;
       showEl($("step4Result"), true);
       showEl($("step4"), true);

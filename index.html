@@ -213,7 +213,7 @@
 
           function updateWordsearchStatus(foundWords) {
             const stat = document.getElementById('wordsearchStatus');
-            if (foundWords.length === 2) {
+            if (foundWords.length === 3) {
               stat.textContent = '¡Enhorabuena! Encontraste ambas palabras.';
             } else if (foundWords.length === 1) {
               stat.textContent = '¡Muy bien! Solo te falta 1 palabra por encontrar.';
