@@ -1052,6 +1052,7 @@ function initStepRouting(step) {
     showEl($("step2"), true);
     showEl($("step3"), true);
     showEl($("step4"), true);
+    showEl($("step5"), true);
     // no-op (we rely on setStep outside)
   }
 }
