@@ -1139,6 +1139,10 @@ function boot() {
       setSimonButtonsEnabled(true);
       initSimon();
     }
+
+  }
+  if (step === 5) {
+    showEl($("step5"), true);
   }
 
   // Step 3 defaults for UI strings
