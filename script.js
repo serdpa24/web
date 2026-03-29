@@ -21,7 +21,7 @@ const FINAL_LOCK_CODE = `${DIGIT_A}${DIGIT_B}${DIGIT_C}`;
 const CLUE_FOR_GIFT_LOCATION =
   "Pista: Iholflgdghv sru frpsohwdu ho sulphu mxhjr, dkrud wlhqhv txh exvfdu dtxhoor txh wdqwr dqvldv. Ghehv exvfdu hq or txh frohfflrqdv, dtxho txh ql vltxlhud klcr txh wx pdguh vh djdfkdud hqfrqwududv od vljxlhqwh slvwd.";
 const CLUE_FOR_KEY_LOCATION =
-  "Pista: Nunca pensé que esto acabaría así <br/>Observa bien cada detalle <br>Hace falta paciencia <br/>Aunque parezca difícil <br/>Confía en tu intuición <br/>Es más sencillo de lo que parece <br/>Fíjate en lo obvio <br/>Al final todo encaja <br/ >Llega el momento de decidir <br/>Toma la pista correcta <br/>Ahora actúa <br/>Sigue adelante <br/>Es tu oportunidad <br/>Recuerda lo aprendido <br/>  Un paso más <br/>No te rindas <br/>Llega hasta el final <br/>Inténtalo otra vez <br/>Nunca es tarde <br/>Confía en ti <br/>Encuentra la salida</p>";
+  "Pista: Nunca pensé que esto acabaría así \nObserva bien cada detalle <br>Hace falta paciencia \nAunque parezca difícil \nConfía en tu intuición \nEs más sencillo de lo que parece \nFíjate en lo obvio \nAl final todo encaja <br/ >Llega el momento de decidir \nToma la pista correcta \nAhora actúa \nSigue adelante \nEs tu oportunidad \nRecuerda lo aprendido \n  Un paso más \nNo te rindas \nLlega hasta el final \nInténtalo otra vez \nNunca es tarde \nConfía en ti \nEncuentra la salida</p>";
 const ZIP_FINAL_TEXT =
   "Cuando tengas el candado abierto, ¡revelará el regalo! Introduce el código cuando estés listo.";
 
