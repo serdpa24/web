@@ -297,7 +297,7 @@ function winDino() {
   localStorage.setItem(STORAGE_KEYS.step2Done, "1");
   localStorage.setItem(STORAGE_KEYS.step2Digit, DIGIT_A);
 
-  $("digitA").textContent = DIGIT_A;
+  //$("digitA").textContent = DIGIT_A;
   $("dinoClue").textContent = CLUE_FOR_GIFT_LOCATION;
   showEl($("step2Result"), true);
   showEl($("dinoRestartBtn"), false);
@@ -547,7 +547,7 @@ function memoryPhaseCompleted() {
   localStorage.setItem(STORAGE_KEYS.step3Done, "1");
   localStorage.setItem(STORAGE_KEYS.step3Digit, DIGIT_B);
 
-  $("digitB").textContent = DIGIT_B;
+  //$("digitB").textContent = DIGIT_B;
   $("memoryClue").textContent = CLUE_FOR_KEY_LOCATION;
   showEl($("step3Result"), true);
 }
@@ -1074,7 +1074,7 @@ function boot() {
 
     if (done) {
       const storedDigitA = localStorage.getItem(STORAGE_KEYS.step2Digit);
-      $("digitA").textContent = storedDigitA !== null ? storedDigitA : DIGIT_A;
+      //$("digitA").textContent = storedDigitA !== null ? storedDigitA : DIGIT_A;
       $("dinoClue").textContent = CLUE_FOR_GIFT_LOCATION;
       // prevent accidental running
       $("dinoStatus").textContent = "Prueba 1 ya superada.";
@@ -1097,7 +1097,7 @@ function boot() {
       showEl($("step3"), true);
     } else if (done) {
       const storedDigitB = localStorage.getItem(STORAGE_KEYS.step3Digit);
-      $("digitB").textContent = storedDigitB !== null ? storedDigitB : DIGIT_B;
+      //$("digitB").textContent = storedDigitB !== null ? storedDigitB : DIGIT_B;
       $("memoryClue").textContent = CLUE_FOR_KEY_LOCATION;
       showEl($("step3Result"), true);
     } else {
@@ -1144,7 +1144,7 @@ function boot() {
   }
 
   // Reset initial texts
-  $("step2Result").querySelector("#digitA").textContent = DIGIT_A;
+  //$("step2Result").querySelector("#digitA").textContent = DIGIT_A;
 }
 
 boot();
