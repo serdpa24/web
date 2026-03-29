@@ -114,8 +114,181 @@
         <div id="step4Result" class="result-card card is-hidden">
           <p class="result-digit">Último dígito: <strong id="digitC"></strong></p>
           <p id="simonFinalText" class="subtitle"></p>
+          <div id="wordsearchSection" class="card" style="margin-top:2em;">
+            <h3>Sopa de Letras Final</h3>
+            <p class="subtitle">Encuentra las dos palabras ocultas (en cualquier dirección): <b>¡Bici</b> y <b>Couler</b>!</p>
+            <div id="wordsearchGrid" style="overflow-x:auto;"></div>
+            <button type="button" class="ghost-btn" onclick="generateWordsearch()">Nueva sopa</button>
+            <p id="wordsearchStatus" class="validation-result"></p>
+          </div>
+          <script>
+          // Letras variadas para hacerlo complicado
+          const WORDSEARCH_SIZE = 14;
+          const WORDSEARCH_WORDS = [
+            {word: "BICI", positions: [], found: false},
+            {word: "COULER", positions: [], found: false},
+          ];
+          // 8 direcciones posibles (dx, dy)
+          const DIRS = [
+            [1,0], [0,1], [-1,0], [0,-1], [1,1], [-1,-1], [-1,1], [1,-1]
+          ];
+          function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+          // Para rellenar letras que distraen: alta frecuencia de letras de palabras diana y letras parecidas
+          function randomFiller() {
+            const pool = 'BCOURLEIADSTMN';
+            return pool[Math.floor(Math.random() * pool.length)];
+          }
 
-          <div id="lockForm" class="lock-form">
+          function makeEmptyBoard(size) {
+            return Array.from({length: size}, () => Array(size).fill(''));
+          }
+
+          function canPlace(board, word, x, y, dx, dy) {
+            for (let i = 0; i < word.length; ++i) {
+              const nx = x + dx*i, ny = y + dy*i;
+              if (nx < 0 || ny < 0 || nx >= WORDSEARCH_SIZE || ny >= WORDSEARCH_SIZE) return false;
+              if (board[ny][nx] && board[ny][nx] !== word[i]) return false;
+            }
+            return true;
+          }
+
+          function placeWord(board, word, markPositions, avoidOverlap) {
+            // Try random positions/directions up to N times
+            let attempts = 200;
+            while (attempts--) {
+              const dir = DIRS[randomInt(0, DIRS.length - 1)];
+              const dx = dir[0], dy = dir[1];
+              const maxX = dx >= 0 ? WORDSEARCH_SIZE - word.length : WORDSEARCH_SIZE - 1;
+              const minX = dx <= 0 ? word.length - 1 : 0;
+              const maxY = dy >= 0 ? WORDSEARCH_SIZE - word.length : WORDSEARCH_SIZE - 1;
+              const minY = dy <= 0 ? word.length - 1 : 0;
+              let x = dx === 0 ? randomInt(0, WORDSEARCH_SIZE - 1) : randomInt(Math.max(0, minX), Math.min(WORDSEARCH_SIZE - 1, maxX));
+              let y = dy === 0 ? randomInt(0, WORDSEARCH_SIZE - 1) : randomInt(Math.max(0, minY), Math.min(WORDSEARCH_SIZE - 1, maxY));
+
+              // Do not overlap exactly with other words if avoidOverlap=true
+              if (avoidOverlap && markPositions.some(pos => pos.some(([px,py]) => px===x && py===y))) continue;
+              
+              if (canPlace(board, word, x, y, dx, dy)) {
+                let positions = [];
+                for (let i = 0; i < word.length; ++i) {
+                  let nx = x + dx*i, ny = y + dy*i;
+                  board[ny][nx] = word[i];
+                  positions.push([nx, ny]);
+                }
+                return positions;
+              }
+            }
+            return [];
+          }
+
+          function fillEmpty(board) {
+            for (let y = 0; y < WORDSEARCH_SIZE; ++y)
+              for (let x = 0; x < WORDSEARCH_SIZE; ++x)
+                if (!board[y][x]) board[y][x] = randomFiller();
+          }
+
+          function renderWordsearchGrid(board, selected, onCellClick) {
+            // allow interactively click cells; selected is [[x,y], ...]
+            let html = '<table class="mem-table" style="margin:auto;font-size:1.2em;">';
+            for (let y = 0; y < WORDSEARCH_SIZE; ++y) {
+              html += '<tr>';
+              for (let x = 0; x < WORDSEARCH_SIZE; ++x) {
+                let sel = selected.some(([sx,sy]) => sx===x && sy===y);
+                html += `<td style="padding:0.2em 0.4em;cursor:pointer;width:1.9em;height:1.9em;
+                  background:${sel?"#ffe374":"#fff"};
+                  border:1px solid #bbb;
+                  font-weight:${sel?"bold":"normal"};
+                  color:${sel?"#760eae":"#18181a"};
+                  user-select:none;"
+                  data-x="${x}" data-y="${y}"
+                  onclick="(${onCellClick})(${x},${y})"
+                  >${board[y][x].toUpperCase()}</td>`;
+              }
+              html += '</tr>';
+            }
+            html += '</table>';
+            return html;
+          }
+
+          function updateWordsearchStatus(foundWords) {
+            const stat = document.getElementById('wordsearchStatus');
+            if (foundWords.length === 2) {
+              stat.textContent = '¡Enhorabuena! Encontraste ambas palabras.';
+            } else if (foundWords.length === 1) {
+              stat.textContent = '¡Muy bien! Solo te falta 1 palabra por encontrar.';
+            } else {
+              stat.textContent = '';
+            }
+          }
+
+          function generateWordsearch() {
+            // Reset all
+            let board = makeEmptyBoard(WORDSEARCH_SIZE);
+            // Place words (do not let couler cross bici for dificultad)
+            let markPositions = [];
+            let word0 = WORDSEARCH_WORDS[0].word;
+            let word1 = WORDSEARCH_WORDS[1].word;
+            let pos0 = placeWord(board, word0, markPositions, false);
+            markPositions.push(pos0);
+            let pos1 = [];
+            // Try to avoid full overlap
+            for (let tries = 0; tries < 20 && pos1.length === 0; ++tries) {
+              pos1 = placeWord(board, word1, markPositions, true);
+            }
+            // If not possible, just place whatever
+            if (pos1.length === 0) pos1 = placeWord(board, word1, markPositions, false);
+            WORDSEARCH_WORDS[0].positions = pos0;
+            WORDSEARCH_WORDS[1].positions = pos1;
+            WORDSEARCH_WORDS.forEach(w => w.found = false);
+            fillEmpty(board);
+
+            // Interactive selection
+            let selected = [];
+            let foundWords = [];
+            function onCellClick(x, y) {
+              const idx = selected.findIndex(([sx,sy]) => sx===x && sy===y);
+              if (idx >= 0) {
+                selected.splice(idx,1);
+              } else if (selected.length < 6) {
+                selected.push([x,y]);
+              }
+              // Comprobar si alguna palabra ha sido seleccionada
+              let norm = pos => pos.slice().sort();
+              for(const [i,w] of WORDSEARCH_WORDS.entries()) {
+                if (!w.found) {
+                  if (w.positions.length===selected.length) {
+                    // close set equality
+                    let selSorted = norm(selected.map(x=>x.join(',')));
+                    let wSorted   = norm(w.positions.map(x=>x.join(',')));
+                    if(selSorted.join()===wSorted.join()) {
+                      w.found = true;
+                      foundWords.push(w.word);
+                      // Mark word
+                      selected = [...w.positions];
+                      setTimeout(()=>{
+                        selected = [];
+                        update();
+                      }, 500);
+                    }
+                  }
+                }
+              }
+              update();
+              updateWordsearchStatus(foundWords);
+              // Si ambas encontradas, no dejar seguir seleccionando
+            }
+
+            function update() {
+              document.getElementById('wordsearchGrid').innerHTML = renderWordsearchGrid(board, selected, onCellClick.toString());
+            }
+            update();
+            updateWordsearchStatus(foundWords);
+          }
+
+          // Inicializa sopa al cargar
+          setTimeout(generateWordsearch, 350);
+          </script>
+          <!--<div id="lockForm" class="lock-form">
             <label class="validation-label" for="finalCodeInput">Introduce los 3 dígitos:</label>
             <div class="validation-row">
               <input
@@ -129,7 +302,7 @@
               <button id="finalValidateBtn" class="validate-btn" type="button">Abrir</button>
             </div>
             <p id="finalValidateResult" class="validation-result"></p>
-          </div>
+          </div>-->
         </div>
       </section>
     </main>
