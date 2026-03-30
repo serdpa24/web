@@ -21,7 +21,7 @@ const FINAL_LOCK_CODE = `${DIGIT_A}${DIGIT_B}${DIGIT_C}`;
 const CLUE_FOR_GIFT_LOCATION =
   "Pista: Fywge hiqxvs hi euyioos uyi Pevmeqs xi gsqwmkyms tsv wiv yq fvewew.";
 const CLUE_FOR_KEY_LOCATION =
-  "Pista: Nunca pensé que esto acabaría así \n Observa bien cada detalle \n Hace falta paciencia \n Aunque parezca difícil \n Confía en tu intuición \n Es más sencillo de lo que parece \n Fíjate en lo obvio \n Al final todo encaja \n Llega el momento de decidir \n Toma la pista correcta \n Ahora actúa \n Sigue adelante \n Es tu oportunidad \n Recuerda lo aprendido \n Un paso más \n No te rindas \n Llega hasta el final \n Inténtalo otra vez \n Nunca es tarde \n Confía en ti \n Encuentra la salida";
+  "Pista: \n Nunca pensé que esto acabaría así \n Observa bien cada detalle \n Hace falta paciencia \n Aunque parezca difícil \n Confía en tu intuición \n Es más sencillo de lo que parece \n Fíjate en lo obvio \n Al final todo encaja \n Llega el momento de decidir \n Toma la pista correcta \n Ahora actúa \n Sigue adelante \n Es tu oportunidad \n Recuerda lo aprendido \n Un paso más \n No te rindas \n Llega hasta el final \n Inténtalo otra vez \n Nunca es tarde \n Confía en ti \n Encuentra la salida";
 const ZIP_FINAL_TEXT =
   "Cuando tengas el candado abierto, ¡revelará el regalo! Introduce el código cuando estés listo.";
 
