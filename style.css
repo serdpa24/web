@@ -54,6 +54,9 @@ h1 {
   height: auto;
   border-radius: 10px;
 }
+.texto {
+  white-space: pre-line;
+}
 
 #introVideo,
 #finalVideo {
