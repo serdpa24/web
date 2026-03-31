@@ -633,7 +633,7 @@ function initMemory() {
     memorySetPhase(1);
   });
 
-  $("memoryHelpBtn").addEventListener("click", () => memoryTryHint());
+  //$("memoryHelpBtn").addEventListener("click", () => memoryTryHint());
   memorySetPhase(1);
 }
 
@@ -1205,7 +1205,7 @@ function boot() {
 
   // Step 3 defaults for UI strings
   if (step === 3) {
-    $("memoryHelpBtn").disabled = false;
+    //$("memoryHelpBtn").disabled = false;
   }
 
   // Reset initial texts
