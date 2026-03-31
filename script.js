@@ -867,6 +867,7 @@ function initSimon() {
         if (simonState.userIndex >= simonState.sequence.length) return;
 
         simonLight(idx, true);
+        simonPlaySound(idx);
         window.setTimeout(() => simonLight(idx, false), 160);
 
         const expected = simonState.sequence[simonState.userIndex];
