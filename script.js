@@ -285,6 +285,7 @@ function dinoGameOver() {
   dinoState.running = false;
   if (dinoState.rafId) cancelAnimationFrame(dinoState.rafId);
   dinoState.rafId = null;
+  playSoundBestEffort(simonWrongAudio);
   $("dinoStatus").textContent =
     "Ups. Casi... Intenta de nuevo. (Pulsar Reiniciar o Salta para empezar)";
   $("dinoStatus").style.fontWeight = "700";
@@ -295,6 +296,7 @@ function winDino() {
   dinoState.gameOver = true;
   if (dinoState.rafId) cancelAnimationFrame(dinoState.rafId);
   dinoState.rafId = null;
+  playSoundBestEffort(simonWinAudio);
 
   $("dinoStatus").textContent = "¡Perfecto! Has superado la prueba 1.";
 
@@ -501,6 +503,7 @@ function memoryOnCardClicked(cardIndex) {
 
     const match = a.pairId === b.pairId;
     if (match) {
+      playSoundBestEffort(memSuccessAudio);
       memoryState.matchedPairs.add(a.pairId);
       memoryState.flipped = [];
       memoryState.busy = false;
@@ -715,6 +718,14 @@ const SIMON_SOUND_BY_INDEX = [
 ];
 const SIMON_SOUND_WRONG = "./sonidos/wrong.mp3";
 const SIMON_SOUND_WIN = "./sonidos/victoria.mp3";
+const MEM_SOUND_SUCCESS = "./sonidos/exito.wav";
+
+function playSoundBestEffort(audio) {
+  if (!audio) return;
+  audio.currentTime = 0;
+  const p = audio.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
 const simonBtnEls = [
   $("simonBtn0"),
   $("simonBtn1"),
@@ -731,6 +742,8 @@ const simonWrongAudio = new Audio(SIMON_SOUND_WRONG);
 const simonWinAudio = new Audio(SIMON_SOUND_WIN);
 simonWrongAudio.preload = "auto";
 simonWinAudio.preload = "auto";
+const memSuccessAudio = new Audio(MEM_SOUND_SUCCESS);
+memSuccessAudio.preload = "auto";
 
 const simonState = {
   sequence: [],
@@ -842,8 +855,7 @@ function simonHandleWrongStep() {
   simonState.playing = true;
   setSimonButtonsEnabled(false);
   $("simonMessage").textContent = "Fallaste. Reiniciando...";
-  simonWrongAudio.currentTime = 0;
-  simonWrongAudio.play().catch(() => {});
+  playSoundBestEffort(simonWrongAudio);
 
   window.setTimeout(() => {
     simonStartNewGame();
@@ -856,8 +868,7 @@ function winSimon() {
   setSimonButtonsEnabled(false);
 
   $("simonMessage").textContent = "¡Correcto! Prueba final completada.";
-  simonWinAudio.currentTime = 0;
-  simonWinAudio.play().catch(() => {});
+  playSoundBestEffort(simonWinAudio);
   localStorage.setItem(STORAGE_KEYS.step4Done, "1");
   localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
 
