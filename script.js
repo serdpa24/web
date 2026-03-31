@@ -708,11 +708,13 @@ function bindFinalValidate() {
 const SIMON_MAX_ROUNDS = 10;
 const SIMON_SOUND_FALLBACK = "./sonidos/castlevania.wav";
 const SIMON_SOUND_BY_INDEX = [
-  "./sonidos/simon-green.wav",
-  "./sonidos/simon-red.wav",
-  "./sonidos/simon-yellow.wav",
-  "./sonidos/simon-blue.wav",
+  "./sonidos/green.mp3",
+  "./sonidos/red.mp3",
+  "./sonidos/yellow.mp3",
+  "./sonidos/blue.mp3",
 ];
+const SIMON_SOUND_WRONG = "./sonidos/wrong.mp3";
+const SIMON_SOUND_WIN = "./sonidos/victoria.mp3";
 const simonBtnEls = [
   $("simonBtn0"),
   $("simonBtn1"),
@@ -725,6 +727,10 @@ const simonAudioByIndex = SIMON_SOUND_BY_INDEX.map((src) => {
   return audio;
 });
 const simonAudioFallbackUsed = [false, false, false, false];
+const simonWrongAudio = new Audio(SIMON_SOUND_WRONG);
+const simonWinAudio = new Audio(SIMON_SOUND_WIN);
+simonWrongAudio.preload = "auto";
+simonWinAudio.preload = "auto";
 
 const simonState = {
   sequence: [],
@@ -836,6 +842,8 @@ function simonHandleWrongStep() {
   simonState.playing = true;
   setSimonButtonsEnabled(false);
   $("simonMessage").textContent = "Fallaste. Reiniciando...";
+  simonWrongAudio.currentTime = 0;
+  simonWrongAudio.play().catch(() => {});
 
   window.setTimeout(() => {
     simonStartNewGame();
@@ -848,6 +856,8 @@ function winSimon() {
   setSimonButtonsEnabled(false);
 
   $("simonMessage").textContent = "¡Correcto! Prueba final completada.";
+  simonWinAudio.currentTime = 0;
+  simonWinAudio.play().catch(() => {});
   localStorage.setItem(STORAGE_KEYS.step4Done, "1");
   localStorage.setItem(STORAGE_KEYS.step4Digit, DIGIT_C);
 
