@@ -706,12 +706,25 @@ function bindFinalValidate() {
 /* ------------------------ Simon Dice (step 4) ------------------------ */
 
 const SIMON_MAX_ROUNDS = 10;
+const SIMON_SOUND_FALLBACK = "./sonidos/castlevania.wav";
+const SIMON_SOUND_BY_INDEX = [
+  "./sonidos/simon-green.wav",
+  "./sonidos/simon-red.wav",
+  "./sonidos/simon-yellow.wav",
+  "./sonidos/simon-blue.wav",
+];
 const simonBtnEls = [
   $("simonBtn0"),
   $("simonBtn1"),
   $("simonBtn2"),
   $("simonBtn3"),
 ];
+const simonAudioByIndex = SIMON_SOUND_BY_INDEX.map((src) => {
+  const audio = new Audio(src);
+  audio.preload = "auto";
+  return audio;
+});
+const simonAudioFallbackUsed = [false, false, false, false];
 
 const simonState = {
   sequence: [],
@@ -734,6 +747,30 @@ function simonLight(valueIndex, isOn) {
   btn.classList.toggle("is-lit", !!isOn);
 }
 
+function simonPlaySound(valueIndex) {
+  const audio = simonAudioByIndex[valueIndex];
+  if (!audio) return;
+
+  audio.currentTime = 0;
+  const playPromise = audio.play();
+  if (!playPromise || typeof playPromise.catch !== "function") return;
+
+  playPromise.catch(() => {
+    const preferred = SIMON_SOUND_BY_INDEX[valueIndex];
+    if (simonAudioFallbackUsed[valueIndex]) return;
+    if (!preferred || preferred === SIMON_SOUND_FALLBACK) return;
+
+    // Si aún no existe el sonido por color, usa temporalmente el fallback común.
+    simonAudioFallbackUsed[valueIndex] = true;
+    audio.src = SIMON_SOUND_FALLBACK;
+    audio.load();
+    const retryPromise = audio.play();
+    if (retryPromise && typeof retryPromise.catch === "function") {
+      retryPromise.catch(() => {});
+    }
+  });
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -748,6 +785,7 @@ async function simonPlaySequence() {
   for (let i = 0; i < simonState.sequence.length; i++) {
     const value = simonState.sequence[i];
     simonLight(value, true);
+    simonPlaySound(value);
     await sleep(420);
     simonLight(value, false);
     await sleep(120);
